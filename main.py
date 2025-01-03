@@ -1,3 +1,4 @@
+import shutil
 def main():
 
     book = input("Enter the name of the book: ")
@@ -13,18 +14,27 @@ def main():
     return book, num_words, letter_counts
     
 def print_results():
-    book, num_words, letter_counts = main()    
-    print(f"The word count of {book} is {num_words}")
+    book, num_words, letter_counts = main() 
+    terminal_width = shutil.get_terminal_size().columns
+    padding = terminal_width // 8
+       
     print("\nLetter counts will be printed alphabetically by default.\n")
     by_count = input("Do you want to print the letter counts by count? (y/n): ") 
     print("\n")
-    print("The letter counts are:")
+
+    print("- - - - - Begin Report - - - - -".center(terminal_width))
+    print(f"Title: {book.upper()}".center(terminal_width))
+    print("\n")
+    print(" " * padding + f"Number of words: {num_words}")
+    print("\n")
+    print(" " * padding + "The letter counts are:")
     if by_count.lower() == "y":
         for letter, count in sorted(letter_counts.items(), key=lambda x: x[1], reverse=True):
-            print(f"{letter}: {count}")
+            print(" " * (padding + (padding // 2)) + f"{letter}: {count}")
     else:
         for letter, count in sorted(letter_counts.items()):
-            print(f"{letter}: {count}")
+            print(" " * (padding + (padding // 2)) + f"{letter}: {count}")
+    print("- - - - - End Report - - - - -".center(terminal_width))
 
 def read_book_file(book):
     try:
