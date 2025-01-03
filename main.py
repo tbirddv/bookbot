@@ -6,15 +6,27 @@ def main():
         print("Error: You didn't enter a book. Defaulting to frankenstein")
         book = "frankenstein"
     
-    book, file_contents = get_string(book)
-
-    
-    
+    book, file_contents = read_book_file(book)
     num_words = word_count(file_contents)
+    letter_counts = character_count(file_contents)
     
+    return book, num_words, letter_counts
+    
+def print_results():
+    book, num_words, letter_counts = main()    
     print(f"The word count of {book} is {num_words}")
+    print("\nLetter counts will be printed alphabetically by default.\n")
+    by_count = input("Do you want to print the letter counts by count? (y/n): ") 
+    print("\n")
+    print("The letter counts are:")
+    if by_count.lower() == "y":
+        for letter, count in sorted(letter_counts.items(), key=lambda x: x[1], reverse=True):
+            print(f"{letter}: {count}")
+    else:
+        for letter, count in sorted(letter_counts.items()):
+            print(f"{letter}: {count}")
 
-def get_string(book):
+def read_book_file(book):
     try:
         with open(f"books/{book}.txt") as f:
             file_contents = f.read()
@@ -27,10 +39,18 @@ def get_string(book):
         except FileNotFoundError:
             print("Error: The default book 'frankenstein' does not exist. Exiting.")
             exit(1)
-    return (book, file_contents)
+    return book, file_contents
 
 def word_count(file_contents):
     words = file_contents.split()
     return len(words)
 
-main()
+def character_count(file_contents):
+    counts = {}
+    lower_case_string = file_contents.lower()
+    for char in lower_case_string:
+        if char.isalpha():
+            counts[char] = counts.get(char, 0) + 1
+    return counts
+
+print_results()
